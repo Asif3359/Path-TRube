@@ -1,3 +1,4 @@
+let timeArray = [];
 const allCatagory = async ()=>{
          const res =await fetch("https://openapi.programming-hero.com/api/videos/categories")
          const data = await res.json()
@@ -25,33 +26,46 @@ const handelCategory = async (category_id) =>{
 
     const cardContainer = document.getElementById("card-Container");
     const noDataCard = document.getElementById("no-data-card");
+    
 
     cardContainer.innerHTML="";
     noDataCard.innerHTML="";
-    
+  
+
+    let i = 0 ;
+    timeArray=[]
     if(data.status==true)
     {
+        
         categoryData.forEach(categoryDt =>{
+            timeArray.push(categoryData[i++]?.others?.posted_date)
             const div=document.createElement("div");
             div.classList.add("card","card-compact","bg-base-100","shadow-xl")
             // <div class="card card-compact bg-base-100 shadow-xl">
             // </div>
-            
+            // timeArray.push(categoryDt?.others?.posted_date);
+            const  houre =Math.floor(categoryDt?.others?.posted_date/3600) ;
+            const NowSecondIS = categoryDt?.others?.posted_date%3600;
+            // console.log(NowSecondIS);
+            const  minuit = Math.floor(NowSecondIS/60)
+
+
+
             div.innerHTML=`
             <figure class="relative">
-                <img  src=${categoryDt?.thumbnail} />
+                <img class="w-[300px] h-[200px]"  src=${categoryDt?.thumbnail} />
                 <div>
-                    <p class=" bg-gray-800 text-white absolute bottom-0 right-0 p-3">${categoryDt?.others?.posted_date}</p>
+                    <p class=" bg-gray-800 text-white absolute mb-2 mr-2 bottom-0 right-0 px-2 py-1 rounded-lg">${houre} Hour ${minuit} min ago </p>
                 </div>
             </figure>
             <div class=" flex gap-4 justify-start items-start mt-4 px-3 pb-4">
               <div>
-                <img class=" w-10 rounded-full bg-slate-300" src=${categoryDt?.authors[0]?.profile_picture} alt="">
+                <img class=" w-10 h-10 rounded-full bg-slate-300" src=${categoryDt?.authors[0]?.profile_picture} alt="">
               </div>
               <div>
-                <h2 class="card-title ">${categoryDt?.title.slice(0,15)}</h2>
+                <h2 class="card-title ">${categoryDt?.title.slice(0,18)}</h2>
                 <p>${categoryDt?.authors[0]?.profile_name} <span class="text-yellow">${categoryDt?.authors[0]?.verified ? "<i class='fa-solid fa-circle-check'></i>":" "  }</span> </p>
-                <p>${categoryDt?.others.views}</p>
+                <p>${categoryDt?.others.views} views</p>
               </div>
             </div>
             
@@ -60,6 +74,7 @@ const handelCategory = async (category_id) =>{
          
             cardContainer.appendChild(div);        
         });
+
     }
     else
     {
@@ -85,14 +100,40 @@ const handelCategory = async (category_id) =>{
             `
          
             noDataCard.appendChild(div);        
-       
+            let timeArray = [];
     }
 
-   
-    
+ 
+ 
 
 }
 
+let count=0 ;
+function SortHandle(){
+    count=1;
+    dataSort();
+}
+
+function dataSort()
+{
+    console.log(timeArray);
+    const stringArray= timeArray.filter(item => item !== '');
+    // console.log(numberArray);
+    const NumberArray = stringArray.map(item => parseInt(item))
+    console.log(NumberArray);
+
+    for(let i = 0 ; i< timeArray.length-1 ; i++)
+    {
+        for(let j = 0 ; j<timeArray.length-i ; j++){
+            if(NumberArray[j] < NumberArray[j+1])
+            {
+                [NumberArray[j], NumberArray[j + 1]] = [NumberArray[j + 1], NumberArray[j]];
+            }
+        }
+    }
+
+    console.log(NumberArray);
+}
 
 
 allCatagory()
