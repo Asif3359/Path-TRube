@@ -2,16 +2,19 @@ const allCatagory = async ()=>{
          const res =await fetch("https://openapi.programming-hero.com/api/videos/categories")
          const data = await res.json()
          const categorys = data.data;
-        //  console.log(categorys);
+
+        // //  console.log(categoryData);
+        
 
         const AllCataGory= document.getElementById("All-catagory");
         categorys.forEach(catagory => {
             const div=document.createElement("div");
             div.innerHTML=`
-            <button onclick="handelCategory('${catagory.category_id}')" class="btn">${catagory.category}</button>
+            <button id="default-click-handel" onclick="handelCategory('${catagory.category_id}')" class="btn">${catagory.category}</button>
             `
             AllCataGory.appendChild(div);
         });
+        handelCategory( "1000");
 }
 
 const handelCategory = async (category_id) =>{
@@ -78,8 +81,6 @@ const handelCategory = async (category_id) =>{
               </div>
             </div>
             </div>
-            
-            
                    
             `
          
@@ -91,6 +92,7 @@ const handelCategory = async (category_id) =>{
     
 
 }
+
 
 
 allCatagory()
