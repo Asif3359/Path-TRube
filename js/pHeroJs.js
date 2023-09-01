@@ -1,4 +1,4 @@
-
+let isChanged = false;
 const allCatagory = async ()=>{
          const res =await fetch("https://openapi.programming-hero.com/api/videos/categories")
          const data = await res.json()
@@ -10,19 +10,32 @@ const allCatagory = async ()=>{
             
             const div=document.createElement("div");
             div.innerHTML=`
-            <button id="default-click-handel" onclick="handelCategory('${catagory.category_id}')" class="btn">${catagory.category}</button>
+            <button id="${catagory.category_id}" onclick="handelCategory('${catagory.category_id}')" class="btn px-2 ">${catagory.category}</button>
             `
             AllCataGory.appendChild(div);
         const sortDiv = document.getElementById("sort-Div");
         sortDiv.innerHTML=`
-           <button onclick="SortHandle('${catagory.category_id}');" class="btn mr-4 md:mr-28">Short By</button>
+           <button id="btn-color" onclick="SortHandle();" class="btn mr-4 md:mr-28 px-2">Short By</button>
           `
+          // isChanged = true;
 
-           
+          // const  btnColor = document.getElementById(`${catagory.category_id}`)
+          
+          // if(isChanged){
+          // btnColor.style.backgroundColor = "blue";
+          // btnColor.style.color = "white";
+          // }
+          // else 
+          // {
+          //   btnColor.style.backgroundColor = "";
+          //   btnColor.style.color = "black";  
+          // }
         });
         
         handelCategory( "1000");
+       
 }
+
 
 const handelCategory = async (category_id) =>{
 
@@ -36,6 +49,20 @@ const handelCategory = async (category_id) =>{
     cardContainer.innerHTML="";
     noDataCard.innerHTML="";
     
+    isChanged = true;
+
+    const  btnColor = document.getElementById(`${category_id}`)
+    
+    if(isChanged){
+     btnColor.style.backgroundColor = "blue";
+     btnColor.style.color = "white";
+    }
+    else 
+    {
+      btnColor.style.backgroundColor = "";
+      btnColor.style.color = "black";  
+    }
+ 
 
     if(data.status==true)
     {
@@ -43,25 +70,30 @@ const handelCategory = async (category_id) =>{
       if(isAscendingOrder){
         
         categoryData.sort((a, b) => {
-          const dateA = a?.others?.posted_date;
-          const dateB = b?.others?.posted_date;
+          const dateA = parseFloat(a?.others?.views) ;
+          const dateB = parseFloat(b?.others?.views) ;
           return dateB - dateA; 
         });  
       }
         
         categoryData.forEach(categoryDt =>{
+         
            
             const div=document.createElement("div");
             div.classList.add("card","card-compact","bg-base-100","shadow-xl")
             const  houre =Math.floor(categoryDt?.others?.posted_date/3600) ;
             const NowSecondIS = categoryDt?.others?.posted_date%3600;
             const  minuit = Math.floor(NowSecondIS/60)
+            let timeValue=true;
+            if(houre===0 && minuit===0){
+              timeValue=false
+            }
 
             div.innerHTML=`
             <figure class="relative">
                 <img class="w-[300px] h-[200px]"  src=${categoryDt?.thumbnail} />
                 <div>
-                    <p class=" bg-gray-800 text-white absolute mb-2 mr-2 bottom-0 right-0 px-2 py-1 rounded-lg">${houre} Hour ${minuit} min ago </p>
+                    <p id="view-time" class=" bg-gray-800 text-white absolute mb-2 mr-2 bottom-0 right-0 px-2 rounded-lg">  ${ timeValue? houre+" hrs "+minuit+" min ago":""} </p>
                 </div>
             </figure>
             <div class=" flex gap-4 justify-start items-start mt-4 px-3 pb-4">
@@ -70,13 +102,14 @@ const handelCategory = async (category_id) =>{
               </div>
               <div>
                 <h2 class="card-title ">${categoryDt?.title.slice(0,18)}</h2>
-                <p>${categoryDt?.authors[0]?.profile_name} <span class="text-yellow">${categoryDt?.authors[0]?.verified ? "<i class='fa-solid fa-circle-check'></i>":" "  }</span> </p>
+                <p class="flex gap-2 items-center " >${categoryDt?.authors[0]?.profile_name} <span class="text-yellow">${categoryDt?.authors[0]?.verified ? "<img src='/fi_10629607.svg'>":" "  }</span> </p>
                 <p>${categoryDt?.others.views} views</p>
               </div>
             </div>
                    
             `
-         
+           
+  
             cardContainer.appendChild(div);        
         });
 
@@ -107,12 +140,32 @@ const handelCategory = async (category_id) =>{
 
 let currentCategoryId = "1000"; 
 let isAscendingOrder = false; 
+let isRes = 0;
 
 const SortHandle = () => {
+  
+  isRes = 1;
+
+  const btnColor =document.getElementById("btn-color");
   isAscendingOrder = !isAscendingOrder;
    
   handelCategory(currentCategoryId); 
+  if(isAscendingOrder)
+  {
+    btnColor.style.backgroundColor = "blue";
+    btnColor.style.color = "white";
+    // handelCategory(currentCategoryId); 
+  }
+  if(!isAscendingOrder)
+  {
+    btnColor.style.backgroundColor = "";
+    btnColor.style.color = "black";
+    
+  }
+  
+  
 };
+
 
 allCatagory()
 
