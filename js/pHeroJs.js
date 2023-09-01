@@ -90,12 +90,12 @@ const handelCategory = async (category_id) =>{
             }
 
             div.innerHTML=`
-            <figure class="relative">
-                <img class="w-[300px] h-[200px]"  src=${categoryDt?.thumbnail} />
-                <div>
-                    <p id="view-time" class=" bg-gray-800 text-white absolute mb-2 mr-2 bottom-0 right-0 px-2 rounded-lg">  ${ timeValue? houre+" hrs "+minuit+" min ago":""} </p>
+            <div class="relative">
+                <img class="w-full h-[200px] rounded-t-xl "  src=${categoryDt?.thumbnail} />
+                <div class="absolute mb-2 mr-2 bottom-0 right-0">
+                    <p id="view-time" class=" bg-gray-800 text-white   px-2 rounded-lg">  ${ timeValue? houre+" hrs "+minuit+" min ago":""} </p>
                 </div>
-            </figure>
+            </div>
             <div class=" flex gap-4 justify-start items-start mt-4 px-3 pb-4">
               <div>
                 <img class=" w-10 h-10 rounded-full bg-slate-300" src=${categoryDt?.authors[0]?.profile_picture} alt="">
