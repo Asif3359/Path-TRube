@@ -1,55 +1,59 @@
-let timeArray = [];
+
 const allCatagory = async ()=>{
          const res =await fetch("https://openapi.programming-hero.com/api/videos/categories")
          const data = await res.json()
          const categorys = data.data;
 
-        // //  console.log(categoryData);
-        
-
         const AllCataGory= document.getElementById("All-catagory");
-        categorys.forEach(catagory => {
+        categorys.forEach(catagory => 
+        {
+            
             const div=document.createElement("div");
             div.innerHTML=`
             <button id="default-click-handel" onclick="handelCategory('${catagory.category_id}')" class="btn">${catagory.category}</button>
             `
             AllCataGory.appendChild(div);
+        const sortDiv = document.getElementById("sort-Div");
+        sortDiv.innerHTML=`
+        <button onclick="SortHandle('${catagory.category_id}');" class="btn mr-4 md:mr-28">Short By</button>
+        `
+
+           
         });
+        
         handelCategory( "1000");
 }
 
 const handelCategory = async (category_id) =>{
+
     const res = await fetch(` https://openapi.programming-hero.com/api/videos/category/${category_id}`)
     const data = await res.json()
     const categoryData= data.data;
-    // console.log(data.status)
 
     const cardContainer = document.getElementById("card-Container");
     const noDataCard = document.getElementById("no-data-card");
-    
 
     cardContainer.innerHTML="";
     noDataCard.innerHTML="";
-  
+    
 
-    let i = 0 ;
-    timeArray=[]
     if(data.status==true)
     {
         
+            categoryData.sort((a, b) => {
+                const dateA = a?.others?.posted_date;
+                const dateB = b?.others?.posted_date;
+                return dateB - dateA; 
+              });       
+      
+        
         categoryData.forEach(categoryDt =>{
-            timeArray.push(categoryData[i++]?.others?.posted_date)
+           
             const div=document.createElement("div");
             div.classList.add("card","card-compact","bg-base-100","shadow-xl")
-            // <div class="card card-compact bg-base-100 shadow-xl">
-            // </div>
-            // timeArray.push(categoryDt?.others?.posted_date);
             const  houre =Math.floor(categoryDt?.others?.posted_date/3600) ;
             const NowSecondIS = categoryDt?.others?.posted_date%3600;
-            // console.log(NowSecondIS);
             const  minuit = Math.floor(NowSecondIS/60)
-
-
 
             div.innerHTML=`
             <figure class="relative">
@@ -68,7 +72,6 @@ const handelCategory = async (category_id) =>{
                 <p>${categoryDt?.others.views} views</p>
               </div>
             </div>
-            
                    
             `
          
@@ -78,12 +81,8 @@ const handelCategory = async (category_id) =>{
     }
     else
     {
-        
             const div=document.createElement("div");
-            // div.classList.add("card","card-compact","bg-base-100","shadow-xl")
-            // <div class="card card-compact bg-base-100 shadow-xl">
-            // </div>
-            
+      
             div.innerHTML=`
 
             <div class="flex justify-center">
@@ -98,42 +97,49 @@ const handelCategory = async (category_id) =>{
             </div>
                    
             `
-         
             noDataCard.appendChild(div);        
-            let timeArray = [];
+          
     }
 
- 
- 
-
 }
 
-let count=0 ;
-function SortHandle(){
-    count=1;
-    dataSort();
-}
+let currentCategoryId = "1000"; // Default category ID
+let isAscendingOrder = false; // Initial sorting order
 
-function dataSort()
-{
-    console.log(timeArray);
-    const stringArray= timeArray.filter(item => item !== '');
-    // console.log(numberArray);
-    const NumberArray = stringArray.map(item => parseInt(item))
-    console.log(NumberArray);
+const SortHandle = () => {
+  isAscendingOrder = !isAscendingOrder; // Toggle sorting order
+  handelCategory(currentCategoryId); // Re-fetch and display videos with the updated sorting order
+};
 
-    for(let i = 0 ; i< timeArray.length-1 ; i++)
-    {
-        for(let j = 0 ; j<timeArray.length-i ; j++){
-            if(NumberArray[j] < NumberArray[j+1])
-            {
-                [NumberArray[j], NumberArray[j + 1]] = [NumberArray[j + 1], NumberArray[j]];
-            }
-        }
-    }
+// Initialize the app
+// allCatagory(currentCategoryId);
 
-    console.log(NumberArray);
-}
+// Fetch and display videos for a category
+// const handelCategory = async (category_id) => {
+//   try {
+//     const res = await fetch(`https://openapi.programming-hero.com/api/videos/category/${category_id}`);
+//     if (!res.ok) {
+//       throw new Error("Network response was not ok");
+//     }
+//     const data = await res.json();
+//     const categoryData = data.data;
+
+//     // Sort videos by posted_date based on the current sorting order
+//     categoryData.sort((a, b) => {
+//       const dateA = a?.others?.posted_date;
+//       const dateB = b?.others?.posted_date;
+//       return isAscendingOrder ? dateA - dateB : dateB - dateA;
+//     });
+
+//     // Rest of your code to display sorted videos here...
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//     // Handle the error and display an error message to the user
+//   }
+// };
+
+
+
 
 
 allCatagory()
