@@ -15,8 +15,8 @@ const allCatagory = async ()=>{
             AllCataGory.appendChild(div);
         const sortDiv = document.getElementById("sort-Div");
         sortDiv.innerHTML=`
-        <button onclick="SortHandle('${catagory.category_id}');" class="btn mr-4 md:mr-28">Short By</button>
-        `
+           <button onclick="SortHandle('${catagory.category_id}');" class="btn mr-4 md:mr-28">Short By</button>
+          `
 
            
         });
@@ -39,13 +39,15 @@ const handelCategory = async (category_id) =>{
 
     if(data.status==true)
     {
+             
+      if(isAscendingOrder){
         
-            categoryData.sort((a, b) => {
-                const dateA = a?.others?.posted_date;
-                const dateB = b?.others?.posted_date;
-                return dateB - dateA; 
-              });       
-      
+        categoryData.sort((a, b) => {
+          const dateA = a?.others?.posted_date;
+          const dateB = b?.others?.posted_date;
+          return dateB - dateA; 
+        });  
+      }
         
         categoryData.forEach(categoryDt =>{
            
@@ -103,44 +105,14 @@ const handelCategory = async (category_id) =>{
 
 }
 
-let currentCategoryId = "1000"; // Default category ID
-let isAscendingOrder = false; // Initial sorting order
+let currentCategoryId = "1000"; 
+let isAscendingOrder = false; 
 
 const SortHandle = () => {
-  isAscendingOrder = !isAscendingOrder; // Toggle sorting order
-  handelCategory(currentCategoryId); // Re-fetch and display videos with the updated sorting order
+  isAscendingOrder = !isAscendingOrder;
+   
+  handelCategory(currentCategoryId); 
 };
-
-// Initialize the app
-// allCatagory(currentCategoryId);
-
-// Fetch and display videos for a category
-// const handelCategory = async (category_id) => {
-//   try {
-//     const res = await fetch(`https://openapi.programming-hero.com/api/videos/category/${category_id}`);
-//     if (!res.ok) {
-//       throw new Error("Network response was not ok");
-//     }
-//     const data = await res.json();
-//     const categoryData = data.data;
-
-//     // Sort videos by posted_date based on the current sorting order
-//     categoryData.sort((a, b) => {
-//       const dateA = a?.others?.posted_date;
-//       const dateB = b?.others?.posted_date;
-//       return isAscendingOrder ? dateA - dateB : dateB - dateA;
-//     });
-
-//     // Rest of your code to display sorted videos here...
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//     // Handle the error and display an error message to the user
-//   }
-// };
-
-
-
-
 
 allCatagory()
 
